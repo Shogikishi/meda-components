@@ -1,0 +1,24 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/components/paper-checkbox/paper-checkbox.html">
+ 
+<dom-module id="meda-formBoolean" attributes="label value">
+  <template>
+    <paper-checkbox checked="{{value}}"></paper-checkbox>
+    <span>[[label]]</span>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-formBoolean",
+      properties: {
+        Required: Boolean,
+        label: String,
+        value: { type: String, notify: true, observer: "_valueChanged" },
+        valid: { type: Boolean, readOnly: true, notify: true, value: true },
+      },
+      _valueChanged: function() {
+        if (this.value == null)
+          this.value = false;
+      },
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,28 @@
+<link rel="import" href="/components/polymer/polymer.html">
+
+<script>
+  Polymer({
+    is: "meda-iWebComponent",
+    properties: {
+      webComponent: { type: Object, observer: "_wcChanged" },
+    },
+    _wcChanged: function() {
+      if (this.element != null) {
+        this.removeChild(this.element);
+        this.element = null;
+      }
+      if (this.webComponent != null) {
+        var self = this;
+        this.importHref("/meml/meda-import/" + this.webComponent.key,
+          function() {
+            self.element = document.createElement(self.webComponent.key);
+            self.appendChild(self.element);
+            for (var key in self.webComponent.value)
+              self.element[key] = self.webComponent.value[key];
+            self.fire("loaded", { element: self.element });
+          });
+      } else
+        this.fire("loaded", null);
+    },
+  });
+</script>

@@ -1,0 +1,37 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/components/paper-input/paper-input.html">
+<link rel="import" href="/meml/meda-import/meda-iWebComponent">
+ 
+<dom-module id="meda-iForm">
+  <template>
+    <meda-iWebComponent id="iwc" web-component="[[form]]" on-loaded="_onLoaded"></meda-iWebComponent>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-iForm",
+      properties: {
+        form: Object,
+        value: { notify: true, observer: "_valueChanged" },
+        valid: { type: Boolean, readOnly: true, notify: true },
+      },
+      _onLoaded: function() {
+        var element = this.$.iwc.element;
+        if (element == null) {
+          this.value = null;
+          this._setValid(false);
+        } else {
+          var self = this;
+          element.addEventListener("value-changed", function() { self.value = element.value; });
+          element.addEventListener("valid-changed", function() { self._setValid(element.valid); });
+          element.value = this.value;
+          this._setValid(element.valid);
+        }
+      },
+      _valueChanged: function() {
+        var element = this.$.iwc.element;
+        if (element != null)
+          element.value = this.value;
+      }
+    });
+  </script>
+</dom-module>

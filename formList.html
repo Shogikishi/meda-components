@@ -1,0 +1,56 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/components/paper-button/paper-button.html">
+<link rel="import" href="/meml/meda-import/meda-iForm">
+ 
+<dom-module id="meda-formList" attributes="label subpropRef value">
+  <template>
+    <span>[[label]]</span>
+    <paper-button on-click="_addClicked">Add</paper-button>
+    <template is="dom-repeat" items="{{value}}">
+      <paper-button on-click="_delClicked">Delete</paper-button>
+      <meda-iForm form="[[_getValue(formRef)]]" value="{{item}}"
+          on-valid-changed="_subvalidChanged"></meda-iForm>
+    </template>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-formList",
+      properties: {
+        label: String,
+        formRef: Object,
+        value: { type: Array, notify: true, observer: "_valueChanged", value: [ ] },
+        valid: { type: Boolean, readOnly: true, notify: true },
+      },
+      _valueChanged: function() {
+        if (this.value == null)
+          this.value = [ ];
+      },
+      _subvalidChanged: function(e) {
+        if (this.valids == null)
+          this.valids = [ ];
+        var valid = e.target.valid;
+        this.valids[e.model.index] = valid;
+        this._setValid(valid && (this.valid || this._calcValid()));
+      },
+      _addClicked: function(e) {
+        this.push("value", null);
+      },
+      _delClicked: function(e) {
+        var index = e.model.index;
+        this.splice("value", index, 1);
+        var oldValid = this.valids[index];
+        this.valids.splice(index, 1);
+        this._setValid(this.valid || (! oldValid && this._calcValid()));
+      },
+      _calcValid() {
+        for (var i in this.value.form)
+          if (! this.valids[i])
+            return false;
+        return true;
+      },
+      _getValue(assignment) {
+        return assignment.value;
+      },
+    });
+  </script>
+</dom-module>

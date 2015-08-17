@@ -1,0 +1,31 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/meml/meda-component/meda-webComponent">
+<link rel="import" href="/components/paper-input/paper-input-decorator.html">
+ 
+<dom-module id="meda-formNumber" attributes="label">
+  <template>
+    <paper-input label="[[label]]" required="[[Required]]" type="number" prevent-invalid-input></paper-input>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-formNumber",
+      properties: {
+        Required: { type: Boolean, observer: "_updateValid" },
+        label: String,
+        value: { type: Number, notify: true, observer: "_valueChanged" },
+        valid: { type: Boolean, readOnly: true, notify: true },
+      },
+      _valueChanged: function() {
+        this.$.input.value = this.value == null ? "" : this.value.tostring();
+      },
+      _valChanged: function() {
+        this._updateValid();
+        var val = this.$.input.value;
+        this.value = ! this.valid || val === "" ? null : parseInt(val);
+      },
+      _updateValid: function() {
+        this._setValid(this.$.input.validate());
+      },
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,76 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/components/paper-button/paper-button.html">
+<link rel="import" href="/components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="/components/paper-toast/paper-toast.html">
+<link rel="import" href="/meml/meda-import/meda-ajax">
+<link rel="import" href="/meml/meda-import/meda-formKey">
+<link rel="import" href="/meml/meda-import/meda-iForm">
+ 
+<dom-module id="meda-submit">
+  <template>
+    <meda-ajax id="formAjax" sublens="meda-form" target="[[_getLens(lensesNamed,selected)]]"
+        response="{{form}}" on-response-changed="_formResp"></meda-ajax>
+    <meda-ajax id="valAjax" sublens="[[_getLens(lensesNamed,selected)]]" target="[[valueKey]]"
+        response="{{value}}"></meda-ajax>
+    <meda-ajax id="putAjax" -put sublens="[[_getLens(lensesNamed,selected)]]" target="[[valueKey]]"
+        on-response-changed="_submitResp"></meda-ajax>
+    <paper-drawer-panel>
+      <div drawer>
+        <meda-formKey -required label="Value Key" value="{{valueKey}}" valid="{{valueValid}}"></meda-formKey>
+        <paper-button disabled="[[_logicNot(valueValid)]]" on-click="_loadClicked">Load</paper-button>
+        <paper-button disabled="[[_logicNor(valueValid,valid)]]" on-click="_submitClicked">Submit</paper-button>
+        <template is="dom-repeat" items="[[lensesNamed]]">
+          <paper-button disabled="[[_logicEqual(index,selected)]]" on-click="_formClicked">[[item.value]]</paper-button>
+        </template>
+      </div>
+      <div main>
+        <meda-iForm form="[[form]]" value="{{value}}" valid="{{valid}}"></meda-iForm>
+      </div>
+    </paper-drawer-panel>
+    <paper-toast id="savedToast" style="z-index: 10" text="Value Saved."></paper-toast>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-submit",
+      properties: {
+        key: String,
+        lensesNamed: { type: Array, observer: "_lensesChanged" },
+      },
+      _lensesChanged: function() {
+        this.selected = 0;
+        this.$.formAjax.go();
+      },
+      _loadClicked: function() {
+        this.$.valAjax.go();
+      },
+      _submitClicked: function() {
+        this.$.putAjax.go(this.value);
+      },
+      _formResp: function() {
+        if (this.valueValid)
+          this.$.valAjax.go();
+      },
+      _submitResp: function() {
+        this.$.savedToast.show();
+        this.selected = (this.selected + 1) % this.lensesNamed.length;
+        this.$.formAjax.go();
+      },
+      _getLens: function(lenses, selected) {
+        return lenses[this.selected].key;
+      },
+      _formClicked: function(e) {
+        this.selected = e.model.index;
+        this.$.formAjax.go();
+      },
+      _logicNot: function(b) {
+        return ! b;
+      },
+      _logicNor: function(a, b) {
+        return ! a || ! b;
+      },
+      _logicEqual: function(a, b) {
+        return a === b;
+      }
+    });
+  </script>
+</dom-module>

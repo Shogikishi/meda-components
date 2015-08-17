@@ -1,0 +1,33 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/components/paper-input/paper-textarea.html">
+ 
+<dom-module id="meda-formString">
+  <template>
+    <paper-textarea id="input" label="[[label]]" required="[[Required]]"
+        on-value-changed="_valChanged"></paper-textarea>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-formString",
+      properties: {
+        Required: { type: Boolean, observer: "_updateValid" },
+        label: String,
+        value: { type: String, notify: true, observer: "_valueChanged" },
+        valid: { type: Boolean, readOnly: true, notify: true },
+      },
+      _valueChanged: function() {
+        if (this.value === "")
+          this.value = null;
+        this.$.input.value = this.value === null ? "" : this.value;
+      },
+      _valChanged: function() {
+        var val = this.$.input.value;
+        this.value = val === "" ? null : val;
+        this._updateValid();
+      },
+      _updateValid: function() {
+        this._setValid(this.$.input.validate());
+      },
+    });
+  </script>
+</dom-module>

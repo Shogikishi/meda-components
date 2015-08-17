@@ -1,0 +1,26 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/meml/meda-import/meda-ajax">
+<link rel="import" href="/meml/meda-import/meda-iWebComponent">
+ 
+<dom-module id="meda-app">
+  <template>
+    <meda-ajax id="ajax" sublens="[[subcomponent]]" target="[[target]]" response="{{response}}"></meda-ajax>
+    <meda-iWebComponent web-component="[[_makeAssign(subcomponent,response)]]"></meda-iWebComponent>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-app",
+      properties: {
+        subcomponent: { type: String, observer: "_propChanged" },
+        target: { type: String, observer: "_propChanged" },
+      },
+      _propChanged: function() {
+        if (this.subcomponent != null && this.target != null)
+          this.$.ajax.go();
+      },
+      _makeAssign: function(subcomponent,response) {
+        return { "key": subcomponent, "value": response };
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,43 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/meml/meda-import/meda-iWebComponent">
+ 
+<dom-module id="meda-ajax">
+  <template>
+    <iron-ajax id="ajax" handle-as="json" on-response="_onResponse"></iron-ajax>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-ajax",
+      properties: {
+        Put: Boolean,
+        Query: Boolean,
+        sublens: String,
+        target: String,
+        response: { type: String, notify: true },
+      },
+      go: function(data) {
+        if (this.Query) {
+          if (data.hasOwnProperty("type") && (data["type"] == null || data["type"].length === 0))
+            delete data["type"];
+          this.$.ajax.params = data;
+          this.$.ajax.url = "/query/" + this.sublens;
+        } else {
+          if (this.Put) {
+            this.$.ajax.method = "PUT";
+            this.$.ajax.body = JSON.stringify(data);
+          }
+          this.$.ajax.url = "/meda/" + this.sublens + "/" + this.target;
+        }
+        this.$.ajax.generateRequest();
+      },
+      _onResponse: function() {
+        var response = this.$.ajax.lastResponse;
+        if (response["error"] != null)
+          alert(response["error"]);
+        else
+          this.response = response;
+      },
+    });
+  </script>
+</dom-module>

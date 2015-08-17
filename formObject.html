@@ -1,0 +1,50 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/components/paper-material/paper-material.html">
+<link rel="import" href="/meml/meda-import/meda-iForm">
+
+<dom-module id="meda-formObject">
+  <template>
+    <paper-material>
+      <span>[[label]]</span>
+      <template is="dom-repeat" items="[[formRefs]]">
+        <meda-iForm form="[[item.value]]" value="[[_getValue(item,value)]]"
+            on-value-changed="_subvalueChanged" on-valid-changed="_subvalidChanged"></meda-iForm>
+      </template>
+    </paper-material>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-formObject",
+      properties: {
+        label: String,
+        formRefs: Array,
+        value: { type: Object, notify: true, observer: "_valueChanged", value: { } },
+        valid: { type: Boolean, readOnly: true, notify: true },
+      },
+      _valueChanged: function() {
+        if (this.value == null)
+          this.value = { };
+        this._setValid(this._calcValid());
+      },
+      _subvalueChanged: function(e) {
+        this.set("value." + this._getName(e.model.item), e.target.value);
+      },
+      _subvalidChanged: function(e) {
+        if (this.valids == null)
+          this.valids = [ ];
+        var valid = e.target.valid;
+        this.valids[e.model.index] = valid;
+        this._setValid(valid && (this.valid || this._calcValid()));
+      },
+      _getValue(model, value) {
+        return this.value[this._getName(model)];
+      },
+      _getName: function(model) {
+        return model.key.split("-")[1];
+      },
+      _calcValid() {
+        return this.valids == null || this.valids.every(function(sp) { return sp });
+      },
+    });
+  </script>
+</dom-module>

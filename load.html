@@ -1,0 +1,35 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/components/paper-button/paper-button.html">
+<link rel="import" href="/components/paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="/meml/meda-import/meda-formObject">
+<link rel="import" href="/meml/meda-import/meda-iWebComponent">
+ 
+<dom-module id="meda-load">
+  <template>
+    <paper-drawer-panel>
+      <div drawer>
+        <meda-formObject id="form" label="[[formObject.label]]" form-refs="[[formObject.formRefs]]"
+            valid="{{valid}}"></meda-formObject>
+        <paper-button disabled="[[_logicNot(valid)]]" on-click="_loadClicked">Load</paper-button>
+      </div>
+      <div main>
+        <meda-iWebComponent id="valueEl"></meda-iWebComponent>
+      </div>
+    </paper-drawer-panel>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-load",
+      properties: {
+        key: String,
+        formObject: Object,
+      },
+      _loadClicked: function() {
+        this.$.valueEl.webComponent = { "key": this.key, "value": this.$.form.value };
+      },
+      _logicNot: function(b) {
+        return ! b;
+      },
+    });
+  </script>
+</dom-module>

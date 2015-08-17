@@ -1,0 +1,75 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/components/paper-item/paper-item.html">
+<link rel="import" href="/components/paper-menu/paper-menu.html">
+<link rel="import" href="/meml/meda-import/meda-iForm">
+ 
+<dom-module id="meda-formCondition">
+  <template>
+    <div>
+      <paper-dropdown-menu label="[[label]]">
+        <paper-menu id="menu" class="dropdown-content" on-selected-changed="_selectedChanged">
+          <template is="dom-repeat" items="[[formRefs]]">
+            <paper-item>[[_getLabel(item)]]</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+    </div>
+    <meda-iForm id="form" on-valid-changed="_subvalidChanged" on-value-changed="_subvalueChanged"></meda-iForm>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-formCondition",
+      properties: {
+        label: String,
+        formRefs: { type: Array, observer: "_formsChanged" },
+        value: { type: Object, notify: true, observer: "_valueChanged" },
+        valid: { type: Boolean, readOnly: true, notify: true },
+      },
+      _valueChanged: function() {
+        if (this.value == null) {
+          this.$.menu.selected = null;
+        } else {
+          var selected = null;
+          for (var i in this.formRefs)
+            if (this.value.key === this.formRefs[i].key) {
+              selected = parseInt(i);
+              break;
+            }
+          var value = this.value.value;
+          this.$.menu.selected = selected;
+          this.$.form.value = value;
+        }
+      },
+      _formsChanged: function() {
+        this.$.menu.selected = null;
+      },
+      _selectedChanged: function() {
+        var selected = this.$.menu.selected;
+        if (selected == null) {
+          this.$.form.form = null;
+          this.value = null;
+        } else {
+          this.$.form.form = this.formRefs[selected].value;
+          this.value = { "key": this.formRefs[selected].key, "value": this.subvalues[selected] };
+        }
+      },
+      _subvalueChanged: function() {
+        if (this.subvalues == null)
+          this.subvalues = { };
+        var selected = this.$.menu.selected;
+        if (selected != null) {
+          var value = this.$.form.value;
+          this.subvalues[selected] = value;
+          this.set("value.value", value);
+        }
+      },
+      _subvalidChanged: function() {
+        this._setValid(this.$.form.valid);
+      },
+      _getLabel: function(item) {
+        return item.value.value.label;
+      },
+    });
+  </script>
+</dom-module>

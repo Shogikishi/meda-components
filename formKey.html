@@ -1,0 +1,101 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/components/iron-icons/iron-icons.html">
+<link rel="import" href="/components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/components/paper-input/paper-input.html">
+<link rel="import" href="/components/paper-item/paper-item.html">
+<link rel="import" href="/components/paper-menu/paper-menu.html">
+<link rel="import" href="/components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="/meml/meda-import/meda-ajax">
+
+<dom-module id="meda-formKey">
+  <template>
+    <meda-ajax id="ajax" -query sublens="meda-label" on-response-changed="_valueChanged"></meda-ajax>
+    <div style="display: flex">
+      <paper-input id="input" label="[[label]]" required="[[Required]]"
+          on-value-changed="_valChanged" pattern="\w{3,100}-\w{3,100}"
+          error-message="Must have form: Account-Name!"></paper-input>
+      <paper-menu-button id="dd">
+        <paper-icon-button icon="arrow-drop-down" class="dropdown-trigger"></paper-icon-button>
+        <paper-menu id="menu" class="dropdown-content" on-iron-select="_onSelect">
+          <template is="dom-repeat" items="[[optKeys]]">
+            <paper-item>[[item.str]]</paper-item>
+          </template>
+        </paper-menu>
+      </paper-menu-button>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-formKey",
+      properties: {
+        Required: { type: Boolean, observer: "_updateValid" },
+        label: String,
+        types: Array,
+        value: { type: String, notify: true, observer: "_valueChanged" },
+        valid: { type: Boolean, readOnly: true, notify: true },
+      },
+      _valueChanged: function() {
+        if (this.value === "")
+          this.value = null;
+        this.$.input.value = this.value == null ? "" : this.value;
+        var strLower = this.value == null ? ""
+          : (this.value.indexOf("-") > -1 ? this._getName(this.value) : this.value).toLowerCase();
+        if (strLower.length < 3)
+          return;
+        var optMap = this.$.ajax.response;
+        var substr = strLower.substring(0, 3);
+        if (this.search !== substr) {
+          this.search = substr;
+          this.$.ajax.go({ "type": this.types, "search": substr });
+        } else if (optMap != null) {
+          var tempKeys = [];
+          for (var key in optMap) {
+            var testUpper = [ this._getName(key) ];
+            if (optMap[key] != null)
+              testUpper.push(optMap[key]);
+            var matches = this._isMatchRec(strLower,
+              testUpper.map(function(c) { return c.toLowerCase(); }));
+            if (matches != null) {
+              var str = key + " (";
+              for (var i in matches)
+                str += testUpper[matches[i]] + ", ";
+              tempKeys.push({ key: key, str: str.substring(0, str.length - 2) + ")" });
+            }
+          }
+          this.optKeys = tempKeys;
+          if (! (this.value in optMap))
+            this.$.dd.open();
+        }
+      },
+      _isMatchRec: function(search, tests) {
+        for (var i in tests)
+          if (tests[i].startsWith(search))
+            return [ i ];
+          else if (search.startsWith(tests[i] + ' ')) {
+            if (search.length == tests[i].length + 1)
+              return [ i ];
+            var lst = this._isMatchRec(search.substring(tests[i].length + 1), tests);
+            if (lst != null) {
+              lst.unshift(i);
+              return lst;
+            }
+          }
+        return null;
+      },
+      _valChanged: function() {
+        var val = this.$.input.value;
+        this.value = val === "" ? null : val;
+        this._updateValid();
+      },
+      _onSelect: function() {
+        this.value = this.optKeys[this.$.menu.selected].key;
+      },
+      _getName: function(key) {
+        return key.split("-")[1];
+      },
+      _updateValid: function() {
+        this._setValid(this.$.input.validate());
+      },
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,27 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/components/google-signin/google-signin.html">
+<link rel="import" href="/components/iron-ajax/iron-ajax.html">
+
+<dom-module id="meda-signin">
+  <template>
+    <iron-ajax id="medaIn" method="POST" url="/auth" contentType="text/plain"></iron-ajax>
+    <iron-ajax id="medaOut" method="GET" url="/auth"></iron-ajax>
+    <google-signin
+        client-id="286538174723-h8q1uufggqqea6eihrtn4n2ikjokh167.apps.googleusercontent.com"
+        scopes="https://www.googleapis.com/auth/plus.login"
+        on-google-signin-aware-success="signedIn" on-google-signed-out="signedOut">
+    </google-signin>
+  </template>
+  <script>
+    Polymer({
+      is: "meda-signin",
+      signedIn: function(e, authResult) {
+        this.$.medaIn.body = authResult["code"];
+        this.$.medaIn.generateRequest();
+      },
+      signedOut: function() {
+        this.$.medaOut.generateRequest();
+      },
+    });
+  </script>
+</dom-module>
