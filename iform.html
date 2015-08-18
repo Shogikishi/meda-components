@@ -1,7 +1,15 @@
 <link rel="import" href="/components/polymer/polymer.html">
 <link rel="import" href="/components/paper-input/paper-input.html">
 <link rel="import" href="/meml/meda-import/meda-iWebComponent">
- 
+<!--
+  '<meda-iForm>' is the interface for interacting with the form web components. If you want to
+    build a form but don't know what type of lens is in the target, you should use iForm.
+  <meda-iForm form="[[ajaxResponse]]" value="{{value}}" valid="{{valid}}"></meda-iForm>
+  Properties:
+    form: json data specifying how to build the dynamic form.
+    value: the value of the data in the field.
+    valid: whether the data in this field is valid.
+-->
 <dom-module id="meda-iForm">
   <template>
     <meda-iWebComponent id="iwc" web-component="[[form]]" on-loaded="_onLoaded"></meda-iWebComponent>

@@ -3,7 +3,17 @@
 <link rel="import" href="/components/paper-item/paper-item.html">
 <link rel="import" href="/components/paper-menu/paper-menu.html">
 <link rel="import" href="/meml/meda-import/meda-iForm">
- 
+<!--
+  '<meda-formCondition>' form for Conditions where a list of possible sublenses are provided and
+    uses type of sublenses to decide consequent.
+  <meda-formCondition label="Lens Type" form-refs="[[ajaxResponse]]" value="{{value}}" valid="{{valid}}"></meda-formCondition>
+  Properties:
+    label: Descriptive text that shows up next to field.
+    formRefs: a list of assignment objects ({ key: ---, value: --- }) that specifies what the
+      possible consequents are.
+    value: the value of the data in the form.
+    valid: whether the data in this field is form.
+-->
 <dom-module id="meda-formCondition">
   <template>
     <div>

@@ -1,7 +1,16 @@
 <link rel="import" href="/components/polymer/polymer.html">
 <link rel="import" href="/components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/meml/meda-import/meda-iWebComponent">
- 
+<!--
+  '<meda-ajax>' is responsible for ajax calls to the MeDa service.
+  <meda-ajax -put sublens="meda-load" target="meda-app" response="{{response}}"></meda-ajax>
+  Properties:
+    Put & Query: There are 3 types of ajax calls: Gets, Puts and Queries. If it is a Put set Put to
+      true, Query for Queries, if neither is set then the default is a Get.
+    sublens: the lens for the request
+    target: the target for the request.  Note this is ignored if Query is true.
+    response: the response from the ajax call.
+-->
 <dom-module id="meda-ajax">
   <template>
     <iron-ajax id="ajax" handle-as="json" on-response="_onResponse"></iron-ajax>

@@ -1,6 +1,15 @@
 <link rel="import" href="/components/polymer/polymer.html">
 <link rel="import" href="/components/paper-checkbox/paper-checkbox.html">
- 
+<!--
+  '<meda-formBoolean>' is the form field for Boolean data (Checkbox).
+  <meda-formBoolean -required label="Required?" value="{{value}}" valid="{{valid}}"></meda-formBoolean>
+  Properties:
+    Required: true if null is not a valid value.  In the future, this should be a checkbox if
+      required and a radio group if not required.
+    label: Descriptive text that shows up next to field.
+    value: the value of the data in the field.
+    valid: whether the data in this field is valid. In this case this will always be true.
+-->
 <dom-module id="meda-formBoolean" attributes="label value">
   <template>
     <paper-checkbox checked="{{value}}"></paper-checkbox>

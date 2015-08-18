@@ -6,7 +6,16 @@
 <link rel="import" href="/components/paper-menu/paper-menu.html">
 <link rel="import" href="/components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="/meml/meda-import/meda-ajax">
-
+<!--
+  '<meda-formKey>' is the form field for Key data (Type to search box). 
+  <meda-formKey -required label="Lens Key" types='["meda-Lens"]' value="{{value}}" valid="{{valid}}"></meda-formBoolean>
+  Properties:
+    Required: true if null is not a valid value.
+    label: Descriptive text that shows up next to field.
+    types: a list of keys specifying what types the scope the key points to should have.
+    value: the value of the data in the field.
+    valid: whether the data in this field is valid.
+-->
 <dom-module id="meda-formKey">
   <template>
     <meda-ajax id="ajax" -query sublens="meda-label" on-response-changed="_valueChanged"></meda-ajax>

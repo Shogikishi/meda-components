@@ -1,6 +1,14 @@
 <link rel="import" href="/components/polymer/polymer.html">
 <link rel="import" href="/components/paper-input/paper-textarea.html">
- 
+<!--
+  '<meda-formString>' is the form field for Strings (Expanding text area).
+  <meda-formString -required label="Name" value="{{value}}" valid="{{valid}}"></meda-formString>
+  Properties:
+    Required: true if null is not a valid value.
+    label: Descriptive text that shows up next to field.
+    value: the value of the data in the field.
+    valid: whether the data in this field is valid.
+-->
 <dom-module id="meda-formString">
   <template>
     <paper-textarea id="input" label="[[label]]" required="[[Required]]"

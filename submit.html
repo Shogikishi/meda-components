@@ -5,7 +5,13 @@
 <link rel="import" href="/meml/meda-import/meda-ajax">
 <link rel="import" href="/meml/meda-import/meda-formKey">
 <link rel="import" href="/meml/meda-import/meda-iForm">
- 
+<!--
+  '<meda-submit>' takes care of the load and submit button for dynamic forms.
+  <meda-submit key="meda-entryComponent" lensesNamed="[[ajaxResponse]]"></meda-submit>
+  Properties:
+    key: the key of Object that contains the subforms for the data needed to be entered.
+    lensesNamed: The list of assignments for each subform specifying its key and label.
+-->
 <dom-module id="meda-submit">
   <template>
     <meda-ajax id="formAjax" sublens="meda-form" target="[[_getLens(lensesNamed,selected)]]"
@@ -17,7 +23,7 @@
     <paper-drawer-panel>
       <div drawer>
         <meda-formKey -required label="Value Key" value="{{valueKey}}" valid="{{valueValid}}"></meda-formKey>
-        <paper-button disabled="[[_logicNot(valueValid)]]" on-click="_loadClicked">Load</paper-button>
+        <paper-button disabled="[[!valueValid]]" on-click="_loadClicked">Load</paper-button>
         <paper-button disabled="[[_logicNor(valueValid,valid)]]" on-click="_submitClicked">Submit</paper-button>
         <template is="dom-repeat" items="[[lensesNamed]]">
           <paper-button disabled="[[_logicEqual(index,selected)]]" on-click="_formClicked">[[item.value]]</paper-button>
@@ -61,9 +67,6 @@
       _formClicked: function(e) {
         this.selected = e.model.index;
         this.$.formAjax.go();
-      },
-      _logicNot: function(b) {
-        return ! b;
       },
       _logicNor: function(a, b) {
         return ! a || ! b;

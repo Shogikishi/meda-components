@@ -1,7 +1,15 @@
 <link rel="import" href="/components/polymer/polymer.html">
 <link rel="import" href="/components/paper-material/paper-material.html">
 <link rel="import" href="/meml/meda-import/meda-iForm">
-
+<!--
+  '<meda-formObject>' form for Object (This is a more traditional form).
+  <meda-formObject label="Lens Form" form-refs="[[ajaxResponse]]" value="{{value}}" valid="{{valid}}"></meda-formObject>
+  Properties:
+    label: Descriptive text that shows up next to field.
+    formRefs: a list of subforms to present.
+    value: the value of the data in the form.
+    valid: whether the data in this field is form.
+-->
 <dom-module id="meda-formObject">
   <template>
     <paper-material>

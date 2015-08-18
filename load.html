@@ -3,14 +3,22 @@
 <link rel="import" href="/components/paper-drawer-panel/paper-drawer-panel.html">
 <link rel="import" href="/meml/meda-import/meda-formObject">
 <link rel="import" href="/meml/meda-import/meda-iWebComponent">
- 
+<!--
+  '<meda-load>' takes a web component lens as the target and generates a form for all of the data
+    the target needs then generates the target with that data.
+  <meda-load key="meda-load" form-object="[[ajaxResponse]]"></meda-load>
+  Properties:
+    key: the key of the web component to be generated.
+    formObject: json specifying how to make the dynamic form that gathers the data to put into web
+      component specified by the key.
+-->
 <dom-module id="meda-load">
   <template>
     <paper-drawer-panel>
       <div drawer>
         <meda-formObject id="form" label="[[formObject.label]]" form-refs="[[formObject.formRefs]]"
             valid="{{valid}}"></meda-formObject>
-        <paper-button disabled="[[_logicNot(valid)]]" on-click="_loadClicked">Load</paper-button>
+        <paper-button disabled="[[!valid]]" on-click="_loadClicked">Load</paper-button>
       </div>
       <div main>
         <meda-iWebComponent id="valueEl"></meda-iWebComponent>
@@ -26,9 +34,6 @@
       },
       _loadClicked: function() {
         this.$.valueEl.webComponent = { "key": this.key, "value": this.$.form.value };
-      },
-      _logicNot: function(b) {
-        return ! b;
       },
     });
   </script>

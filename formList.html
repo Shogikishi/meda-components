@@ -1,7 +1,15 @@
 <link rel="import" href="/components/polymer/polymer.html">
 <link rel="import" href="/components/paper-button/paper-button.html">
 <link rel="import" href="/meml/meda-import/meda-iForm">
- 
+<!--
+  '<meda-formList>' is the form for a list of data. 
+  <meda-formList label="Past Addresses" form-ref="[[ajaxResponse]]" value="{{value}}" valid="{{valid}}"></meda-formList>
+  Properties:
+    label: Descriptive text that shows up next to field.
+    formRef: assignment specifying what subform this is a list of.
+    value: the value of the data in the field.
+    valid: whether the data in this field is valid. In this case this will always be true.
+-->
 <dom-module id="meda-formList" attributes="label subpropRef value">
   <template>
     <span>[[label]]</span>

@@ -1,7 +1,14 @@
 <link rel="import" href="/components/polymer/polymer.html">
 <link rel="import" href="/meml/meda-import/meda-ajax">
 <link rel="import" href="/meml/meda-import/meda-iWebComponent">
- 
+<!--
+  '<meda-app>' Takes a lens associated with a web component and a target and builds a web app with
+    it.  This should be the most used element when using web components from the MeDa system.
+  <meda-app subcomponent="meda-load" target="meda-app"></meda-app>
+  Properties:
+    subcomponent: the web component to generate.
+    target: the target that contains the data to populate the properties of the web component.
+-->
 <dom-module id="meda-app">
   <template>
     <meda-ajax id="ajax" sublens="[[subcomponent]]" target="[[target]]" response="{{response}}"></meda-ajax>
