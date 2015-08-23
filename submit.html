@@ -22,7 +22,7 @@
     <meda-ajax id="putAjax" -put sublens="[[_getLens(lensesNamed,selected)]]" target="[[valueKey]]"
         on-response-changed="_submitResp"></meda-ajax>
     <paper-drawer-panel>
-      <div drawer>
+      <div drawer style="overflow: auto">
         <meda-formKey -required label="Value Key" value="{{valueKey}}" valid="{{valueValid}}"></meda-formKey>
         <paper-button disabled="[[!valueValid]]" on-click="_loadClicked">Load</paper-button>
         <paper-button disabled="[[_logicNor(valueValid,valid)]]" on-click="_submitClicked">Submit</paper-button>

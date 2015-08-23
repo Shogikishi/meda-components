@@ -1,11 +1,9 @@
 <!-- Copyright (c) 2015 Powerscombined LLC. -->
 <link rel="import" href="/components/polymer/polymer.html">
-<link rel="import" href="/components/iron-icons/iron-icons.html">
-<link rel="import" href="/components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/components/iron-dropdown/iron-dropdown.html">
 <link rel="import" href="/components/paper-input/paper-input.html">
 <link rel="import" href="/components/paper-item/paper-item.html">
 <link rel="import" href="/components/paper-menu/paper-menu.html">
-<link rel="import" href="/components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="/meml/meda-import/meda-ajax">
 <!--
   '<meda-formKey>' is the form field for Key data (Type to search box). 
@@ -20,19 +18,16 @@
 <dom-module id="meda-formKey">
   <template>
     <meda-ajax id="ajax" -query sublens="meda-label" on-response-changed="_valueChanged"></meda-ajax>
-    <div style="display: flex">
-      <paper-input id="input" label="[[label]]" required="[[Required]]"
-          on-value-changed="_valChanged" pattern="\w{3,100}-\w{3,100}"
-          error-message="Must have form: Account-Name!"></paper-input>
-      <paper-menu-button id="dd">
-        <paper-icon-button icon="arrow-drop-down" class="dropdown-trigger"></paper-icon-button>
-        <paper-menu id="menu" class="dropdown-content" on-iron-select="_onSelect">
-          <template is="dom-repeat" items="[[optKeys]]">
-            <paper-item>[[item.str]]</paper-item>
-          </template>
-        </paper-menu>
-      </paper-menu-button>
-    </div>
+    <paper-input id="input" class="dropdown-trigger" label="[[label]]" required="[[Required]]"
+        on-value-changed="_valChanged" pattern="\w{3,100}-\w{3,100}"
+        error-message="Must have form: Account-Name!"></paper-input>
+    <iron-dropdown id="dd" vertical-offset="54">
+      <paper-menu id="menu" class="dropdown-content" on-iron-select="_onSelect">
+        <template is="dom-repeat" items="[[optKeys]]">
+          <paper-item>[[item.str]]</paper-item>
+        </template>
+      </paper-menu>
+    </iron-dropdown>
   </template>
   <script>
     Polymer({
@@ -43,6 +38,9 @@
         types: Array,
         value: { type: String, notify: true, observer: "_valueChanged" },
         valid: { type: Boolean, readOnly: true, notify: true },
+      },
+      attached: function() {
+        this.$.dd.focusTarget = this.$.input;
       },
       _valueChanged: function() {
         if (this.value === "")
@@ -72,6 +70,7 @@
               tempKeys.push({ key: key, str: str.substring(0, str.length - 2) + ")" });
             }
           }
+          this.$.menu.select(null);
           this.optKeys = tempKeys;
           if (! (this.value in optMap))
             this.$.dd.open();
@@ -99,6 +98,7 @@
       },
       _onSelect: function() {
         this.value = this.optKeys[this.$.menu.selected].key;
+        this.$.dd.close();
       },
       _getName: function(key) {
         return key.split("-")[1];
