@@ -31,7 +31,7 @@
         valid: { type: Boolean, readOnly: true, notify: true },
       },
       _valueChanged: function() {
-        if (this.value == null)
+        if (this.value == null || typeof this.value !== "object")
           this.value = { };
         this._setValid(this._calcValid());
       },
