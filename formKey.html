@@ -3,6 +3,7 @@
 <link rel="import" href="/components/iron-dropdown/iron-dropdown.html">
 <link rel="import" href="/components/paper-input/paper-input.html">
 <link rel="import" href="/components/paper-item/paper-item.html">
+<link rel="import" href="/components/paper-material/paper-material.html">
 <link rel="import" href="/components/paper-menu/paper-menu.html">
 <link rel="import" href="/meml/meda-import/meda-ajax">
 <!--
@@ -22,11 +23,13 @@
         on-value-changed="_valChanged" pattern="\w{3,100}-\w{3,100}"
         error-message="Must have form: Account-Name!"></paper-input>
     <iron-dropdown id="dd" vertical-offset="54">
-      <paper-menu id="menu" class="dropdown-content" on-iron-select="_onSelect">
-        <template is="dom-repeat" items="[[optKeys]]">
-          <paper-item>[[item.str]]</paper-item>
-        </template>
-      </paper-menu>
+      <paper-material class="dropdown-content">
+        <paper-menu id="menu" on-iron-select="_onSelect">
+          <template is="dom-repeat" items="[[optKeys]]">
+            <paper-item>[[item.str]]</paper-item>
+          </template>
+        </paper-menu>
+      </paper-material>
     </iron-dropdown>
   </template>
   <script>
