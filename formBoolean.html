@@ -13,8 +13,10 @@
 -->
 <dom-module id="meda-formBoolean" attributes="label value">
   <template>
-    <paper-checkbox checked="{{value}}"></paper-checkbox>
-    <span>[[label]]</span>
+    <div>
+      <paper-checkbox checked="{{value}}"></paper-checkbox>
+      <span>[[label]]</span>
+    </div>
   </template>
   <script>
     Polymer({

@@ -19,9 +19,9 @@
 <dom-module id="meda-formKey">
   <template>
     <meda-ajax id="ajax" -query sublens="meda-label" on-response-changed="_valueChanged"></meda-ajax>
-    <paper-input id="input" class="dropdown-trigger" label="[[label]]" required="[[Required]]"
-        on-value-changed="_valChanged" pattern="\w{3,100}-\w{3,100}"
-        error-message="Must have form: Account-Name!"></paper-input>
+    <paper-input id="input" class="dropdown-trigger" style="padding: 0px 5px 10px;"
+        label="[[label]]" required="[[Required]]" on-value-changed="_valChanged"
+        pattern="\w{3,100}-\w{3,100}" error-message="Must have form: Account-Name!"></paper-input>
     <iron-dropdown id="dd" vertical-offset="54">
       <paper-material class="dropdown-content">
         <paper-menu id="menu" on-iron-select="_onSelect">

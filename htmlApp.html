@@ -1,8 +1,79 @@
 <html>
 <head>
+  <script src="/components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="/components/polymer/polymer.html">
+  <link rel="import" href="/components/paper-button/paper-button.html">
+  <link rel="import" href="/components/paper-header-panel/paper-header-panel.html">
+  <link rel="import" href="/components/paper-toolbar/paper-toolbar.html">
   <link rel="import" href="/meml/meda-import/meda-app">
+  <link rel="import" href="/meml/meda-import/meda-formKey">
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
+  <script>
+    function signInCallback(authResult) {
+      if (authResult["code"]) {
+        $.ajax({
+          type: "POST",
+          url: "/auth",
+          contentType: "application/json",
+          success: function(result) {
+            $("#signinButton").css("display", "none");
+            $("#signout").css("display", "inline");
+          },
+          processData: false,
+          data: JSON.stringify({ "code": authResult["code"] }),
+        });
+      } else if (authResult["error"]) {
+        alert(authResult["error"]);
+      }
+    }
+    
+    function loadClicked() {
+      var app = document.querySelector("#app");
+      app.target = null;
+      app.subcomponent = lk.value;
+      app.target = tk.value;
+    }
+    function signoutClicked() {
+      $.ajax({
+        type: "GET",
+        url: "/auth",
+        contentType: "application/json",
+        success: function(result) {
+          $("#signinButton").css("display", "inline");
+          $("#signout").css("display", "none");
+        },
+        processData: false,
+      });
+    }
+  </script>
 </head>
 <body>
-  <meda-app subcomponent="meda-load" target="meda-app"></meda-app>
+  <paper-header-panel>
+    <paper-toolbar style="height: 70px; background-color: lightgray">
+      <span class="title">MeDa</span>
+      <meda-formKey id="lensKey" -required label="Lens" types='["meda-WebComponent"]'></meda-formKey>
+      <meda-formKey id="targetKey" -required label="Target"></meda-formKey>
+      <paper-button id="loadBtn" onclick="loadClicked()">Load</paper-button>
+      <div id="signinButton">
+        <span class="g-signin" data-scope="https://www.googleapis.com/auth/plus.login"
+            data-clientid="286538174723-h8q1uufggqqea6eihrtn4n2ikjokh167.apps.googleusercontent.com"
+            data-redirecturi="postmessage" data-accesstype="offline"
+            data-cookiepolicy="single_host_origin" data-callback="signInCallback"></span>
+      </div>
+      <paper-button id="signout" style="display: none" onclick="signoutClicked()">Sign Out</paper-button>
+    </paper-toolbar>
+    <meda-app id="app"></meda-app>
+  </paper-header-panel>
 </body>
+<script>
+  var lk = document.querySelector("#lensKey");
+  var tk = document.querySelector("#targetKey");
+  var lb = document.querySelector("#loadBtn");
+  var validCB = function() { lb.disabled = ! lk.valid || ! tk.valid; };
+  validCB();
+  lk.addEventListener('valid-changed', validCB);
+  tk.addEventListener('valid-changed', validCB);
+</script>
 </html>
