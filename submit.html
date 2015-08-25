@@ -10,31 +10,31 @@
 <link rel="import" href="/meml/meda-import/meda-iForm">
 <!--
   '<meda-submit>' takes care of the load and submit button for dynamic forms.
-  <meda-submit key="meda-entryComponent" lensesNamed="[[ajaxResponse]]"></meda-submit>
+  <meda-submit key="meda-entryComponent" wizard="[[ajaxResponse]]"></meda-submit>
   Properties:
     key: the key of Object that contains the subforms for the data needed to be entered.
-    lensesNamed: The list of assignments for each subform specifying its key and label.
+    wizard: Condition that supplies a list of named keys if target is a wizard.
 -->
 <dom-module id="meda-submit">
   <template>
-    <meda-ajax id="formAjax" sublens="meda-form" target="[[_getLens(lensesNamed,selected)]]"
+    <meda-ajax id="formAjax" sublens="meda-form" target="[[_getLens(key,wizard,selected)]]"
         response="{{form}}" on-response-changed="_formResp"></meda-ajax>
-    <meda-ajax id="valAjax" sublens="[[_getLens(lensesNamed,selected)]]" target="[[valueKey]]"
+    <meda-ajax id="valAjax" sublens="[[_getLens(key,wizard,selected)]]" target="[[valueKey]]"
         response="{{value}}"></meda-ajax>
-    <meda-ajax id="putAjax" -put sublens="[[_getLens(lensesNamed,selected)]]" target="[[valueKey]]"
+    <meda-ajax id="putAjax" -put sublens="[[_getLens(key,wizard,selected)]]" target="[[valueKey]]"
         on-response-changed="_submitResp"></meda-ajax>
     <paper-drawer-panel>
       <div drawer>
         <meda-formKey -required label="Value Key" value="{{valueKey}}" valid="{{valueValid}}"></meda-formKey>
         <paper-button disabled="[[!valueValid]]" on-click="_loadClicked">Load</paper-button>
         <paper-button disabled="[[_logicNor(valueValid,valid)]]" on-click="_submitClicked">Submit</paper-button>
-        <paper-menu selected="{{selected}}" on-iron-select="_onSelect">
-          <template is="dom-repeat" items="[[lensesNamed]]">
+        <paper-menu selected="{{selected}}" on-iron-select="_updateForm">
+          <template is="dom-repeat" items="[[wizard.value]]">
             <paper-item>[[item.value]]</paper-item>
           </template>
         </paper-menu>
       </div>
-      <div main style="overflow: auto; padding: 10px 0px">
+      <div main style="overflow: auto">
         <meda-iForm form="[[form]]" value="{{value}}" valid="{{valid}}"></meda-iForm>
       </div>
     </paper-drawer-panel>
@@ -44,12 +44,16 @@
     Polymer({
       is: "meda-submit",
       properties: {
-        key: String,
-        lensesNamed: { type: Array, observer: "_lensesChanged" },
+        key: { type: String, observer: "_updateForm" },
+        wizard: { type: Object, observer: "_lensesChanged" },
+      },
+      _updateForm: function() {
+        if (this.$.formAjax.target != null)
+          this.$.formAjax.go();
       },
       _lensesChanged: function() {
         this.selected = 0;
-        this.$.formAjax.go();
+        this._updateForm();
       },
       _loadClicked: function() {
         this.$.valAjax.go();
@@ -63,14 +67,13 @@
       },
       _submitResp: function() {
         this.$.savedToast.show();
-        this.selected = (this.selected + 1) % this.lensesNamed.length;
-        this.$.formAjax.go();
+        if (this.wizard != null) {
+          this.selected = (this.selected + 1) % this.wizard.value.length;
+          this._updateForm();
+        }
       },
-      _getLens: function(lenses, selected) {
-        return lenses[this.selected].key;
-      },
-      _onSelect: function(e) {
-        this.$.formAjax.go();
+      _getLens: function(key, lenses, selected) {
+        return lenses == null ? key : lenses.value[selected].key;
       },
       _logicNor: function(a, b) {
         return ! a || ! b;

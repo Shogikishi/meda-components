@@ -13,7 +13,7 @@
 -->
 <dom-module id="meda-formObject">
   <template>
-    <paper-material>
+    <paper-material style="margin: 10px; padding: 10px">
       <span>[[label]]</span>
       <template is="dom-repeat" items="[[formRefs]]">
         <meda-iForm form="[[item.value]]" value="[[_getValue(item,value)]]"

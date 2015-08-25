@@ -1,6 +1,7 @@
 <!-- Copyright (c) 2015 Powerscombined LLC. -->
 <link rel="import" href="/components/polymer/polymer.html">
 <link rel="import" href="/components/paper-button/paper-button.html">
+<link rel="import" href="/components/paper-material/paper-material.html">
 <link rel="import" href="/meml/meda-import/meda-iForm">
 <!--
   '<meda-formList>' is the form for a list of data. 
@@ -13,13 +14,18 @@
 -->
 <dom-module id="meda-formList" attributes="label subpropRef value">
   <template>
-    <span>[[label]]</span>
-    <paper-button on-click="_addClicked">Add</paper-button>
-    <template is="dom-repeat" items="{{value}}">
-      <paper-button on-click="_delClicked">Delete</paper-button>
-      <meda-iForm form="[[_getValue(formRef)]]" value="{{item}}"
-          on-valid-changed="_subvalidChanged"></meda-iForm>
-    </template>
+    <paper-material style="margin: 10px; padding: 10px">
+      <span>[[label]]</span>
+      <paper-button on-click="_addClicked">Add</paper-button>
+      <template is="dom-repeat" items="{{value}}">
+        <div>
+          <paper-button on-click="_insClicked">Insert</paper-button>
+          <paper-button on-click="_delClicked">Delete</paper-button>
+          <meda-iForm form="[[_getValue(formRef)]]" value="{{item}}"
+              on-valid-changed="_subvalidChanged"></meda-iForm>
+        </div>
+      </template>
+    </paper-material>
   </template>
   <script>
     Polymer({
@@ -43,6 +49,11 @@
       },
       _addClicked: function(e) {
         this.push("value", null);
+      },
+      _insClicked: function(e) {
+        var index = e.model.index;
+        this.valids.splice(index, 0, false);
+        this.splice("value", index, 0, null);
       },
       _delClicked: function(e) {
         var index = e.model.index;
