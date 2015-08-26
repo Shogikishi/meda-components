@@ -1,0 +1,15 @@
+<link rel="import" href="/components/polymer/polymer.html">
+
+<script>
+  Polymer({
+    is: "meda-nameCreator",
+    properties: {
+      name: Object,
+      value: { type: String, notify: true, computed: "computeValue(name)" },
+    },
+    computeValue: function(name) {
+      return name.key === "tutorial-namePerson" ? name.value.firstName + " " + name.value.lastName
+        : name.value;
+    },
+  });
+</script>

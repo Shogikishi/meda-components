@@ -13,22 +13,26 @@
       webComponent: { type: Object, observer: "_wcChanged" },
     },
     _wcChanged: function() {
-      if (this.element != null) {
-        this.removeChild(this.element);
-        this.element = null;
-      }
-      if (this.webComponent != null) {
+      if (! this.processing) {
+        this.processing = true;
         var self = this;
-        this.importHref("/meml/meda-import/" + this.webComponent.key,
-          function() {
-            self.element = document.createElement(self.webComponent.key);
-            self.appendChild(self.element);
-            for (var key in self.webComponent.value)
-              self.element[key] = self.webComponent.value[key];
-            self.fire("loaded", { element: self.element });
-          });
-      } else
-        this.fire("loaded", null);
+        this.async(function() {
+          self.processing = false;
+          if (this.webComponent != null) {
+            this.importHref("/meml/meda-import/" + this.webComponent.key,
+              function() {
+                if (self.element != null)
+                  self.removeChild(self.element);
+                self.element = document.createElement(self.webComponent.key);
+                for (var key in self.webComponent.value)
+                  self.element[key] = self.webComponent.value[key];
+                self.appendChild(self.element);
+                self.fire("loaded", { element: self.element });
+              });
+          } else
+            this.fire("loaded", null);
+        });
+      }
     },
   });
 </script>

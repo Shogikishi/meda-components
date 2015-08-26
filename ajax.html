@@ -43,7 +43,7 @@
       },
       _onResponse: function() {
         var response = this.$.ajax.lastResponse;
-        if (response["error"] != null)
+        if (response != null && response["error"] != null)
           alert(response["error"]);
         else
           this.response = response;

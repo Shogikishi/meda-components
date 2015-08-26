@@ -1,0 +1,19 @@
+<link rel="import" href="/components/polymer/polymer.html">
+<link rel="import" href="/meml/meda-import/tutorial-nameCreator">
+
+<dom-module id="tutorial-helloMeDa">
+  <template>
+    <meda-nameCreator name="[[greetFromRef.value]]" value="{{fromName}}"></meda-nameCreator>
+    <meda-nameCreator name="[[greetToRef.value]]" value="{{toName}}"></meda-nameCreator>
+    <span>[[fromName]]</span> says: Hello <span>[[toName]]</span>!
+  </template>
+  <script>
+    Polymer({
+      is: "tutorial-helloMeDa",
+      properties: {
+        greetFromRef: Object,
+        greetToRef: Object,
+      },
+    });
+  </script>
+</dom-module>
